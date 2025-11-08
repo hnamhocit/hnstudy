@@ -1,6 +1,6 @@
-import {NextResponse} from 'next/server';
-import axios from 'axios';
-import {v4 as uuidv4} from 'uuid';
+import {v4 as uuidv4} from "uuid";
+import axios from "axios";
+import {NextResponse} from "next/server";
 
 const AZURE_KEY = process.env.AZURE_TRANSLATOR_KEY;
 const AZURE_ENDPOINT = process.env.AZURE_TRANSLATOR_ENDPOINT;
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
         const response = await axios({
             baseURL: AZURE_ENDPOINT,
-            url: '/translate',
+            url: '/dictionary/examples',
             method: 'post',
             headers: headers,
             params: params,

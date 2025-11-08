@@ -74,7 +74,7 @@ const NewDesk = () => {
         try {
             const batch = writeBatch(db);
 
-            const deckRef = doc(db, "Decks", newDeskId);
+            const deckRef = doc(db, "decks", newDeskId);
             const newDeckData: IDesk = {
                 id: newDeskId,
                 ownerId: user.id,

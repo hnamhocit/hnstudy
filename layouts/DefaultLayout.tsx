@@ -1,14 +1,16 @@
-import { ReactNode } from "react"
+"use client"
+
+import {ReactNode} from "react"
 import Sidebar from "./components/Sidebar"
 
-const DefaultLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="flex h-screen">
-      <Sidebar />
+const DefaultLayout = ({children}: { children: ReactNode }) => {
+    return (
+        <div className="flex h-screen">
+            <Sidebar/>
 
-      <div className="flex-1 p-4">{children}</div>
-    </div>
-  )
+            <div className="flex-1 p-4">{children}</div>
+        </div>
+    )
 }
 
 export default DefaultLayout
