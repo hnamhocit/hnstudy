@@ -1,5 +1,5 @@
-import type {Metadata} from "next";
-import {Instrument_Sans} from "next/font/google";
+import type { Metadata } from "next";
+import { Instrument_Sans } from "next/font/google";
 
 import "./globals.css";
 import Providers from "@/components/Providers";
@@ -13,21 +13,21 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+    children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
-        <body
-            className={`${font.className} antialiased dark:bg-[#0D1117] dark:text-[#E6EDF3]`}
-        >
-        <Providers>
-            <StyledComponentsRegistry>
-                {children}
-            </StyledComponentsRegistry>
-        </Providers>
-        </body>
+            <body
+                className={`${font.className} min-h-screen antialiased dark:bg-[#1F232A] dark:text-[#E6EDF3]`}
+            >
+                <Providers>
+                    <StyledComponentsRegistry>
+                        {children}
+                    </StyledComponentsRegistry>
+                </Providers>
+            </body>
         </html>
     );
 }

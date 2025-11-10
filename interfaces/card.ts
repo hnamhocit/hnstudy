@@ -6,6 +6,8 @@ export interface ICard extends IDocument {
 
   front: string;
   back: string;
+  phonetic: string
+  audio: string
 
   nextReviewDate: Date;
   interval: number;

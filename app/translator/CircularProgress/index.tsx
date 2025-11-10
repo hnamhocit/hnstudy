@@ -63,7 +63,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
       </svg>
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg font-bold">
+        <span className="text-xs font-bold">
           {text ? text : `${progress}%`}
         </span>
       </div>

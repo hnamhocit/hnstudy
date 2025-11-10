@@ -4,9 +4,7 @@ import { onAuthStateChanged } from "firebase/auth"
 import { Loading } from "@/components/Loading"
 import { useUserStore } from "@/stores"
 import Form from "../Form"
-import { auth, db } from "@/config"
-import { doc, getDoc } from "firebase/firestore"
-import { IUser } from "@/interfaces/user"
+import { auth } from "@/config"
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { user, isLoading, fetchUser } = useUserStore()
