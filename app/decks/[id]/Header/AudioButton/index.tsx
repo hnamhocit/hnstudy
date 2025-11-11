@@ -1,4 +1,5 @@
 import { Button } from '@heroui/react';
+import { Headphones, Hourglass, Pause } from 'lucide-react';
 import { useState, useRef } from 'react';
 
 interface AudioButtonProps {
@@ -31,11 +32,11 @@ const AudioButton = ({ src, className = "" }: AudioButtonProps) => {
   const getButtonIcon = () => {
     switch (audioState) {
       case 'loading':
-        return '⏳'; // Loading icon
+        return <Hourglass size={20} />;
       case 'playing':
-        return '⏸️'; // Pause icon
+        return <Pause size={20} />;
       default:
-        return '🎧'; // Headphone icon
+        return <Headphones size={20} />;
     }
   };
 

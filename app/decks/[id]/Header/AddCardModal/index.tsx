@@ -1,9 +1,12 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, useDisclosure } from "@heroui/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/react"
 import axios from "axios"
-import { Headphones, Plus } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useState, useEffect } from "react"
-import AudioButton from "../AudioButton"
-import Link from "next/link"
+
+import PartsOfSpeechSelection from "./PartsOfSpeechSelection"
+import PhoneticsSelection from "./PhoneticsSelection"
+import SelectionStatus from "./SelectionStatus"
+import LanguagesSelection from "./LanguagesSelection"
 
 const defaultLanguages = [
   { code: "en", name: "English" },
@@ -16,15 +19,20 @@ const defaultLanguages = [
   { code: "de", name: "German" },
 ]
 
-interface Phonetic {
+export interface Phonetic {
   text?: string
   audio: string
   sourceUrl: string
 }
 
-interface Meaning {
+export interface Meaning {
   partOfSpeech: string
   definitions: string[]
+}
+
+export interface SelectedItems {
+  partOfSpeech: string | null
+  phonetic: Phonetic | null
 }
 
 const AddCardModal = () => {
@@ -34,7 +42,14 @@ const AddCardModal = () => {
   const [toLang, setToLang] = useState("vi")
   const [languages, setLanguages] = useState(defaultLanguages)
   const [phonetics, setPhonetics] = useState<Phonetic[]>([])
-  const [partsOfSpeech, setPartsOfSpeech] = useState<string[]>([])
+  const [meanings, setMeanings] = useState<Meaning[]>([])
+
+  const [selected, setSelected] = useState<SelectedItems>({
+    partOfSpeech: null,
+    phonetic: null
+  })
+
+  const [isSelecting, setIsSelecting] = useState(false)
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -61,21 +76,66 @@ const AddCardModal = () => {
     }
   }, [isOpen])
 
-  const handleAddCard = async () => {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/${fromLang}/${front}`)
-    const data = await response.json()
+  const handleLookupWord = async () => {
+    if (!front.trim()) return
 
-    const document = data[0]
-    const meanings = document.meanings as Meaning[]
-    const phonetics = document.phonetics as Phonetic[]
+    try {
+      const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/${fromLang}/${front}`)
+      const data = await response.json()
 
-    setPartsOfSpeech(meanings.map((meaning) => meaning.partOfSpeech))
-    setPhonetics(phonetics.filter(p => p.audio.length > 0))
+      const document = data[0]
+      const meaningsData = document.meanings as Meaning[]
+      const phoneticsData = document.phonetics as Phonetic[]
 
+      setMeanings(meaningsData)
+      setPhonetics(phoneticsData.filter(p => p.audio && p.audio.length > 0))
+
+      setIsSelecting(true)
+
+      // Reset selected items
+      setSelected({
+        partOfSpeech: null,
+        phonetic: null
+      })
+    } catch (error) {
+      console.error("Failed to fetch word data:", error)
+    }
+  }
+
+  const handleSelectPartOfSpeech = (pos: string) => {
+    setSelected(prev => ({
+      ...prev,
+      partOfSpeech: prev.partOfSpeech === pos ? null : pos // Toggle selection
+    }))
+  }
+
+  const handleSelectPhonetic = (phonetic: Phonetic) => {
+    setSelected(prev => ({
+      ...prev,
+      phonetic: prev.phonetic?.audio === phonetic.audio ? null : phonetic // Toggle selection
+    }))
+  }
+
+  const handleAddCard = () => {
+    console.log("Adding card with:", {
+      word: front,
+      fromLang,
+      toLang,
+      selectedPartOfSpeech: selected.partOfSpeech,
+      selectedPhonetic: selected.phonetic
+    })
+
+    // Reset everything
     setFront("")
     setFromLang("en")
     setToLang("vi")
+    setMeanings([])
+    setPhonetics([])
+    setSelected({ partOfSpeech: null, phonetic: null })
+    setIsSelecting(false)
   }
+
+  const canAddCard = front.trim() && selected.partOfSpeech && selected.phonetic
 
   return (
     <>
@@ -88,6 +148,7 @@ const AddCardModal = () => {
           {(onClose) => (
             <>
               <ModalHeader>Add card</ModalHeader>
+
               <ModalBody className="gap-4 pb-6">
                 <Input
                   value={front}
@@ -96,43 +157,39 @@ const AddCardModal = () => {
                   placeholder="Enter word or phrase..."
                 />
 
-                <div className="flex gap-3">
-                  <Select
-                    label="From language"
-                    selectedKeys={[fromLang]}
-                    onSelectionChange={(keys) => setFromLang(Array.from(keys)[0] as string)}
-                    className="flex-1"
+
+                <LanguagesSelection fromLang={fromLang} toLang={toLang} setFromLang={setFromLang} setToLang={setToLang} languages={languages} />
+
+                {/* Lookup Button - chỉ hiện khi có từ nhưng chưa lookup */}
+                {front.trim() && !isSelecting && (
+                  <Button
+                    color="primary"
+                    onPress={handleLookupWord}
+                    className="w-full"
                   >
-                    {languages.map((lang) => (
-                      <SelectItem key={lang.code}>
-                        {lang.name}
-                      </SelectItem>
-                    ))}
-                  </Select>
+                    Lookup Word
+                  </Button>
+                )}
 
-                  <Select
-                    label="To language"
-                    selectedKeys={[toLang]}
-                    onSelectionChange={(keys) => setToLang(Array.from(keys)[0] as string)}
-                    className="flex-1"
-                  >
-                    {languages.map((lang) => (
-                      <SelectItem key={lang.code}>
-                        {lang.name}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  {partsOfSpeech.map(pos => <button key={pos} className="block text-sm font-medium py-1 px-3 bg-neutral-700 border border-neutral-900/20 rounded-full">{pos}</button>)}
-                </div>
+                {isSelecting && (
+                  <>
+                    {meanings.length > 0 && (
+                      <PartsOfSpeechSelection
+                        meanings={meanings}
+                        onChange={handleSelectPartOfSpeech}
+                        selected={selected}
+                      />
+                    )}
 
-                {phonetics.map((p, i) => <div key={i} className="p-4 bg-neutral-900 border-neutral-700 border rounded-2xl space-y-2">
-                  <div className="text-lg font-semibold text-white">{p.text}</div>
-                  <Link href={p.sourceUrl} target="_blank" className="block text-sm text-blue-500 font-medium underline">{p.sourceUrl}</Link>
-                  <AudioButton src={p.audio} />
-                </div>)}
+                    {phonetics.length > 0 && (
+                      <PhoneticsSelection phonetics={phonetics} selected={selected} onChange={handleSelectPhonetic} />
+                    )}
+
+                    <SelectionStatus selected={selected} />
+                  </>
+                )}
+
 
                 <div className="flex gap-2 justify-end">
                   <Button variant="light" onPress={onClose}>
@@ -142,7 +199,7 @@ const AddCardModal = () => {
                   <Button
                     color="primary"
                     onPress={handleAddCard}
-                    isDisabled={!front.trim()}
+                    isDisabled={!canAddCard}
                   >
                     Add Card
                   </Button>
