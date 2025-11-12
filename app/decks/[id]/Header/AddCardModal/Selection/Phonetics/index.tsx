@@ -1,16 +1,17 @@
 import { FC } from "react"
-import { Phonetic, SelectedItems } from ".."
 import Link from "next/link"
-import AudioButton from "../../AudioButton"
 import { Check } from "lucide-react"
 
-interface PhoneticsSelectionProps {
+import { Phonetic, SelectedItems } from "../.."
+import AudioButton from "../../../AudioButton"
+
+interface PhoneticsProps {
   phonetics: Phonetic[]
   selected: SelectedItems
   onChange: (phonetic: Phonetic) => void
 }
 
-const PhoneticsSelection: FC<PhoneticsSelectionProps> = ({ phonetics, selected, onChange }) => {
+const Phonetics: FC<PhoneticsProps> = ({ phonetics, selected, onChange }) => {
   return (
     <div className="space-y-3">
       <h4 className="font-medium">Select Pronunciation:</h4>
@@ -55,4 +56,4 @@ const PhoneticsSelection: FC<PhoneticsSelectionProps> = ({ phonetics, selected, 
   )
 }
 
-export default PhoneticsSelection 
+export default Phonetics 

@@ -1,11 +1,11 @@
 import { FC } from "react"
-import { SelectedItems } from ".."
+import { SelectedItems } from "../.."
 
-interface SelectionStatusProps {
+interface StatusProps {
   selected: SelectedItems
 }
 
-const SelectionStatus: FC<SelectionStatusProps> = ({ selected }) => {
+const Status: FC<StatusProps> = ({ selected }) => {
   return (
     <div className="p-3 bg-neutral-50 rounded-lg">
       <div className="text-sm text-gray-600">
@@ -16,4 +16,4 @@ const SelectionStatus: FC<SelectionStatusProps> = ({ selected }) => {
   )
 }
 
-export default SelectionStatus
+export default Status

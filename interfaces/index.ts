@@ -1,3 +1,3 @@
 export * from './user'
-export * from './desk'
+export * from './deck'
 export * from './card'

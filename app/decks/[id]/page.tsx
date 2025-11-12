@@ -3,18 +3,20 @@
 import { doc, onSnapshot } from "firebase/firestore"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Button, ButtonGroup, Input } from "@heroui/react"
+import { BookOpen, Brain, ChevronLeft, Grid, List, Search, WalletCards, Webhook, ZapIcon } from "lucide-react"
 
 import { db } from "@/config"
-import { IDeck } from "@/interfaces"
-import { Button, ButtonGroup, Input } from "@heroui/react"
-import { BookOpen, Brain, ChevronLeft, Eye, Grid, List, Plus, RefreshCcw, Search, Share, Table, Trash, User, WalletCards, Webhook, ZapIcon } from "lucide-react"
+import { ICard, IDeck } from "@/interfaces"
 import Header from "./Header"
 import Stat from "./Stat"
+import Card from "./Card"
 
 const DeckDetails = () => {
   const { id } = useParams<{ id: string }>()
   const [deck, setDeck] = useState<IDeck | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [cards, setCards] = useState<ICard[]>([])
 
   const [error, setError] = useState<string | null>(null)
 
@@ -79,7 +81,7 @@ const DeckDetails = () => {
 
   return (
     <>
-      <Header name={deck?.name as string} description={deck?.description as string} />
+      <Header name={deck?.name} description={deck?.description} setCards={setCards} id={id} />
 
       <div className="p-4 space-y-12">
         <div className="grid grid-cols-4 gap-7">
@@ -95,12 +97,15 @@ const DeckDetails = () => {
             <Button isIconOnly><List size={20} /></Button>
           </ButtonGroup>
 
-
           <div className="flex items-center gap-3">
             <Input startContent={<Search size={20} />} placeholder="Enter here" />
 
             <Button color="primary" variant="shadow" startContent={<ZapIcon size={20} />} className="shrink-0">Practice now</Button>
           </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-4">
+          {cards.map(card => <Card key={card.id} {...card} />)}
         </div>
       </div>
     </>

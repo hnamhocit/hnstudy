@@ -1,15 +1,15 @@
 import { FC } from "react"
 import { Check } from "lucide-react"
 
-import { Meaning, SelectedItems } from ".."
+import { Meaning, SelectedItems } from "../.."
 
-interface PartsOfSpeechSelectionProps {
+interface PartsOfSpeechProps {
   meanings: Meaning[]
   onChange: (value: string) => void
   selected: SelectedItems
 }
 
-const PartsOfSpeechSelection: FC<PartsOfSpeechSelectionProps> = ({ meanings, onChange, selected }) => {
+const PartsOfSpeech: FC<PartsOfSpeechProps> = ({ meanings, onChange, selected }) => {
   return (
     <div className="space-y-3">
       <h4 className="font-medium">Select Part of Speech:</h4>
@@ -34,4 +34,4 @@ const PartsOfSpeechSelection: FC<PartsOfSpeechSelectionProps> = ({ meanings, onC
   )
 }
 
-export default PartsOfSpeechSelection
+export default PartsOfSpeech

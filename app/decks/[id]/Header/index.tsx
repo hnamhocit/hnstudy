@@ -1,17 +1,20 @@
 import { Button } from "@heroui/react"
 import { ChevronLeft, Clock, Trash, User } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { FC } from "react"
+import { Dispatch, FC, SetStateAction } from "react"
 
 import AddCardModal from "./AddCardModal"
 import AddMoreModal from "./AddMoreModal"
+import { ICard } from "@/interfaces"
 
 interface HeaderProps {
-  name: string
-  description: string
+  name?: string
+  description?: string
+  id: string
+  setCards: Dispatch<SetStateAction<ICard[]>>
 }
 
-const Header: FC<HeaderProps> = ({ name, description }) => {
+const Header: FC<HeaderProps> = ({ name, description, setCards, id }) => {
   const router = useRouter()
 
   return (
@@ -29,7 +32,7 @@ const Header: FC<HeaderProps> = ({ name, description }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <AddCardModal />
+          <AddCardModal setCards={setCards} id={id} />
           <AddMoreModal />
           <Button startContent={<Trash size={20} />} color="danger">Delete</Button>
         </div>
