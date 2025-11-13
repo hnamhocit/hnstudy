@@ -96,7 +96,7 @@ const Card: FC<ICard> = ({ front, phonetic, pos, definition, note, examples, aud
           <div>Note</div>
         </div>
 
-        <div className="pl-7">{note}</div>
+        <div className="pl-7 text-sm">{note.length === 0 ? "This card doesn't have any note..." : note}</div>
       </div>
     </div>
   )

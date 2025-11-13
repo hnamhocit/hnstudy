@@ -1,6 +1,6 @@
 import { Button, Input } from "@heroui/react"
 import { Search } from "lucide-react"
-import NewDeskModal from "./NewDeskModal"
+import NewDeckModal from "./NewDeckModal"
 
 const Header = () => {
   return (
@@ -14,7 +14,7 @@ const Header = () => {
       <div className="flex items-center gap-3">
         <Input startContent={<Search size={18} />} placeholder="Enter here..." />
 
-        <NewDeskModal />
+        <NewDeckModal />
       </div>
     </div>
   )

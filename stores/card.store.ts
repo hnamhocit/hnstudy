@@ -36,6 +36,10 @@ interface CardStore {
   setExamples: (examples: IExample[]) => void
   selected: SelectedItems
   setSelected: (value: SelectedItems) => void
+  from: string
+  setFrom: (value: string) => void
+  to: string
+  setTo: (value: string) => void
 }
 
 export const useCardStore = create<CardStore>(set => ({
@@ -53,5 +57,9 @@ export const useCardStore = create<CardStore>(set => ({
     phonetic: null,
     partOfSpeech: null
   },
-  setSelected: selected => set({ selected })
+  setSelected: selected => set({ selected }),
+  from: "",
+  setFrom: from => set({ from }),
+  to: "",
+  setTo: to => set({ to })
 }))

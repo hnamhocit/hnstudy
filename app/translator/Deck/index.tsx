@@ -7,9 +7,10 @@ import { Settings2Icon, SquareArrowOutUpRight } from "lucide-react"
 import CircularProgress from "../CircularProgress"
 import { IDeck } from "@/interfaces"
 import { useRouter } from "next/navigation"
+import { useDeckCards } from "@/hooks/useDeckCards"
 
-const Deck: FC<IDeck> = ({ id, name, description, stats, wordCount, lastSessionAccuracy }) => {
-  const progress = wordCount === 0 ? 0 : (stats.learned / wordCount) * 100
+const Deck: FC<IDeck> = ({ id, name, description, wordCount }) => {
+  const { cards } = useDeckCards(id)
   const router = useRouter()
 
   return (
@@ -24,19 +25,19 @@ const Deck: FC<IDeck> = ({ id, name, description, stats, wordCount, lastSessionA
 
       <div className="grid gap-4 grid-cols-4 items-center">
         <div className="flex flex-col gap-1 items-center">
-          <div className="font-bold text-3xl text-green-500">{stats.learned}</div>
+          <div className="font-bold text-3xl text-green-500">{cards.filter(c => c.status === "learned").length}</div>
 
           <div className="text-sm font-medium text-green-500">Learned</div>
         </div>
 
         <div className="flex flex-col gap-1 items-center">
-          <div className="font-bold text-3xl text-purple-500">{stats.learning}</div>
+          <div className="font-bold text-3xl text-purple-500">{cards.filter(c => c.status === "learning").length}</div>
 
           <div className="text-sm font-medium text-purple-500">Learning</div>
         </div>
 
         <div className="flex flex-col gap-1 items-center">
-          <div className="font-bold text-3xl text-orange-500">{stats.new}</div>
+          <div className="font-bold text-3xl text-orange-500">{cards.filter(c => c.status === "new").length}</div>
 
           <div className="text-sm font-medium text-orange-500">New words</div>
         </div>
@@ -44,15 +45,15 @@ const Deck: FC<IDeck> = ({ id, name, description, stats, wordCount, lastSessionA
         <CircularProgress
           strokeWidth={6}
           size={64}
-          progress={lastSessionAccuracy * 100}
+          progress={70}
           trackColor="text-indigo-700/50"
           progressColor="text-indigo-500"
         />
       </div>
 
       <div className="space-y-2">
-        <div className="text-sm text-gray-300">Progress: <span className="font-semibold text-blue-500">{progress}%</span></div>
-        <Progress value={progress} className="h-1" />
+        <div className="text-sm text-gray-300">Progress: <span className="font-semibold text-blue-500">70%</span></div>
+        <Progress value={70} className="h-1" />
       </div>
 
       <div className="flex gap-3">

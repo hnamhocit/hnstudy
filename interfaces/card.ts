@@ -19,8 +19,16 @@ export interface ICard extends IDocument {
   note: string
   examples: IExample[]
 
-  nextReviewDate: Date;
-  interval: number;
-  easeFactor: number;
-  repetitions: number;
+  // Spaced Repetition System (SRS)
+  status: 'new' | 'learning' | 'learned' | 'review'
+  nextReviewDate: Date
+  interval: number
+  easeFactor: number
+  repetitions: number
+
+  // Stats
+  lastReviewed?: Date
+  correctCount: number
+  wrongCount: number
+  streak: number
 }

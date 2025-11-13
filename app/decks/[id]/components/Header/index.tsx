@@ -1,21 +1,37 @@
-import { Button } from "@heroui/react"
+import { addToast, Button, toast } from "@heroui/react"
 import { ChevronLeft, Clock, Trash, User } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { Dispatch, FC, SetStateAction } from "react"
+import { FC, useState } from "react"
 
 import AddCardModal from "./AddCardModal"
 import AddMoreModal from "./AddMoreModal"
-import { ICard } from "@/interfaces"
+import { deleteDoc, doc } from "firebase/firestore"
+import { db } from "@/config"
 
 interface HeaderProps {
   name?: string
   description?: string
   id: string
-  setCards: Dispatch<SetStateAction<ICard[]>>
 }
 
-const Header: FC<HeaderProps> = ({ name, description, setCards, id }) => {
+const Header: FC<HeaderProps> = ({ name, description, id }) => {
   const router = useRouter()
+  const [isDisabled, setIsDisabled] = useState(false)
+
+  const handleDelete = async () => {
+    try {
+      setIsDisabled(true)
+
+      await deleteDoc(doc(db, 'decks', id))
+    } catch (error: any) {
+      addToast({
+        title: error?.message,
+        color: "danger"
+      })
+    } finally {
+      setIsDisabled(false)
+    }
+  }
 
   return (
     <div className="sticky top-0 bg-neutral-900/70 backdrop-blur-xl border-b border-white/5 left-0 w-full h-28 p-4">
@@ -32,9 +48,9 @@ const Header: FC<HeaderProps> = ({ name, description, setCards, id }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <AddCardModal setCards={setCards} id={id} />
+          <AddCardModal id={id} />
           <AddMoreModal />
-          <Button startContent={<Trash size={20} />} color="danger">Delete</Button>
+          <Button isLoading={isDisabled} onPress={handleDelete} startContent={<Trash size={20} />} color="danger">Delete</Button>
         </div>
       </div>
 

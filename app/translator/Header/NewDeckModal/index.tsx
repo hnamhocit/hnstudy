@@ -9,7 +9,7 @@ import { useUserStore } from "@/stores"
 import { doc, setDoc } from "firebase/firestore"
 import { db } from "@/config"
 
-const NewDeskModal = () => {
+const NewDeckModal = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [isPublic, setIsPublic] = useState(true)
@@ -33,13 +33,6 @@ const NewDeskModal = () => {
         isPublic,
         wordCount: 0,
         userId: user?.id as string,
-        stats: {
-          new: 0,
-          learned: 0,
-          learning: 0
-        },
-        lastSessionAccuracy: 0,
-        lastSessionDate: date
       }
 
       await setDoc(doc(db, "decks", id), newDeskData)
@@ -86,4 +79,4 @@ const NewDeskModal = () => {
   )
 }
 
-export default NewDeskModal 
+export default NewDeckModal 

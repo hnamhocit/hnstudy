@@ -6,13 +6,4 @@ export interface IDeck extends IDocument {
   userId: string
   wordCount: number
   isPublic: boolean
-
-  stats: {
-    new: number
-    learning: number
-    learned: number
-  };
-
-  lastSessionAccuracy: number
-  lastSessionDate: Date
 }
