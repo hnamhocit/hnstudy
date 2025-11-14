@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react'
 
 import { usePracticeSystem } from '@/hooks/usePracticeSystem'
 import { useDeckCards } from '@/hooks/useDeckCards'
+import { cardController } from '@/controllers'
 
 export default function PracticePage() {
   const { id } = useParams<{ id: string }>()
@@ -17,7 +18,7 @@ export default function PracticePage() {
   })
   const [showCompletion, setShowCompletion] = useState(false)
 
-  const { cards, updateCard } = useDeckCards(id as string)
+  const { cards } = useDeckCards(id as string)
   const {
     currentCard,
     currentCardIndex,
@@ -56,7 +57,7 @@ export default function PracticePage() {
     const updatedCard = answerCard(quality)
     if (updatedCard) {
       try {
-        await updateCard(currentCard.id, updatedCard)
+        await cardController.update(currentCard.deckId, currentCard.id, updatedCard)
       } catch (error) {
         console.error('Failed to update card:', error)
       }

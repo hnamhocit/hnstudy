@@ -2,7 +2,7 @@ import { FC } from "react"
 import Link from "next/link"
 import { Check } from "lucide-react"
 
-import { Phonetic, SelectedItems } from "../.."
+import { Phonetic, SelectedItems } from "@/stores"
 import AudioButton from "../../../AudioButton"
 
 interface PhoneticsProps {

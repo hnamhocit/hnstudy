@@ -1,29 +1,29 @@
 import { IExample } from "@/interfaces";
 import { create } from "zustand";
 
-interface Phonetic {
+export interface Phonetic {
   text: string
   audio: string
   sourceUrl: string
 }
 
-interface Definition {
+export interface Definition {
   definition: string
   synonyms: string[]
   antonyms: string[]
 }
 
-interface Meaning {
+export interface Meaning {
   partOfSpeech: string
   definitions: Definition[]
 }
 
-interface SelectedItems {
+export interface SelectedItems {
   partOfSpeech: string | null
   phonetic: Phonetic | null
 }
 
-interface CardStore {
+export interface CardStore {
   front: string
   setFront: (value: string) => void
   meanings: Meaning[]

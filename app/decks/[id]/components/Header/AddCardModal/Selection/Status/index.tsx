@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { SelectedItems } from "../.."
+import { SelectedItems } from "@/stores"
 
 interface StatusProps {
   selected: SelectedItems

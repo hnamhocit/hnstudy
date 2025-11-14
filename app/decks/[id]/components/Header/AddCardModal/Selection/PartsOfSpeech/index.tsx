@@ -1,7 +1,6 @@
 import { FC } from "react"
 import { Check } from "lucide-react"
-
-import { Meaning, SelectedItems } from "../.."
+import { Meaning, SelectedItems } from "@/stores"
 
 interface PartsOfSpeechProps {
   meanings: Meaning[]
