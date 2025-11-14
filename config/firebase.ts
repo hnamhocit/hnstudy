@@ -4,7 +4,7 @@ import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyCwIpRcyORF1q42cw6i6sSBqcO2J_6SO3s",
-  authDomain: "hnstudy.firebaseapp.com",
+  authDomain: "hnstudy.vercel.app",
   projectId: "flash-card-34e9b",
   storageBucket: "flash-card-34e9b.firebasestorage.app",
   messagingSenderId: "782714750971",
