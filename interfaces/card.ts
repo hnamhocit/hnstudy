@@ -5,12 +5,13 @@ export interface IExample {
   to: string
 }
 
+export type CardStatus = 'new' | 'learning' | 'learned' | 'review'
+
 export interface ICard extends IDocument {
   id: string;
   deckId: string;
 
   front: string;
-  back: string;
   phonetic: string
   audio: string
   sourceUrl: string
@@ -20,7 +21,7 @@ export interface ICard extends IDocument {
   examples: IExample[]
 
   // Spaced Repetition System (SRS)
-  status: 'new' | 'learning' | 'learned' | 'review'
+  status: CardStatus
   nextReviewDate: Date
   interval: number
   easeFactor: number

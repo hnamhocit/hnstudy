@@ -1,22 +1,33 @@
-import { addToast, Button, toast } from "@heroui/react"
+import { addToast, Button } from "@heroui/react"
 import { ChevronLeft, Clock, Trash, User } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
+import { deleteDoc, doc, getDoc } from "firebase/firestore"
 
+import { db } from "@/config"
+import { IUser } from "@/interfaces"
 import AddCardModal from "./AddCardModal"
 import AddMoreModal from "./AddMoreModal"
-import { deleteDoc, doc } from "firebase/firestore"
-import { db } from "@/config"
 
 interface HeaderProps {
-  name?: string
-  description?: string
+  name: string
+  description: string
   id: string
+  userId: string
 }
 
-const Header: FC<HeaderProps> = ({ name, description, id }) => {
+const Header: FC<HeaderProps> = ({ name, description, id, userId }) => {
   const router = useRouter()
   const [isDisabled, setIsDisabled] = useState(false)
+  const [username, setUsername] = useState("")
+
+  useEffect(() => {
+    (async () => {
+      const snapshot = await getDoc(doc(db, 'users', userId))
+      const data = snapshot.data() as { username: string }
+      setUsername(data.username)
+    })()
+  }, [userId])
 
   const handleDelete = async () => {
     try {
@@ -58,7 +69,7 @@ const Header: FC<HeaderProps> = ({ name, description, id }) => {
         <div className="flex items-center gap-2">
           <User size={18} />
           <div>Owner:</div>
-          <div className="font-semibold text-white">123best</div>
+          <div className="font-semibold text-white">{username}</div>
         </div>
 
         <div className="flex items-center gap-3">

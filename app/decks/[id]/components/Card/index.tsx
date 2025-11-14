@@ -1,10 +1,20 @@
-import { Accordion, AccordionItem, Button } from "@heroui/react"
-import { BookOpen, Lightbulb, MessageCircle, Volume2, VolumeX } from "lucide-react"
+import { Accordion, AccordionItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@heroui/react"
+import { BookOpen, EllipsisIcon, Lightbulb, MessageCircle, PencilIcon, Trash2Icon, Volume2, VolumeX } from "lucide-react"
+import { Gloria_Hallelujah } from "next/font/google"
+import clsx from "clsx"
 import { FC, useState, useRef } from "react"
 
 import { ICard } from "@/interfaces"
+import { cardController } from "@/controllers"
+import UpdateCardModal from "@/components/UpdateCardModal"
 
-const Card: FC<ICard> = ({ front, phonetic, pos, definition, note, examples, audio }) => {
+const font = Gloria_Hallelujah({
+  weight: "400"
+})
+
+const Card: FC<ICard> = (props) => {
+  const { id, front, phonetic, pos, definition, note, examples, audio, deckId } = props
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -29,8 +39,26 @@ const Card: FC<ICard> = ({ front, phonetic, pos, definition, note, examples, aud
   }
 
   return (
-    <div className="p-4 border rounded-2xl space-y-4 bg-neutral-900 border-gray-700">
-      <div className="text-3xl font-bold">{front}</div>
+    <div className="relative p-4 border rounded-2xl space-y-4 bg-neutral-900 border-gray-700">
+
+      <div className="absolute top-3 right-3">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly variant="light">
+              <EllipsisIcon size={20} />
+            </Button>
+          </DropdownTrigger>
+
+          <DropdownMenu>
+            <DropdownItem onClick={onOpen} startContent={<PencilIcon size={20} />} key="update">Edit</DropdownItem>
+            <DropdownItem onClick={() => cardController.delete(deckId, id)} color="danger" startContent={<Trash2Icon size={20} />} key="Delete">Delete</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+
+        <UpdateCardModal isOpen={isOpen} onOpenChange={onOpenChange} deckId={deckId} card={props} />
+      </div>
+
+      <div className={clsx("text-3xl font-bold", font.className)}>{front}</div>
 
       <div className="flex items-center gap-3">
         <div>{phonetic}</div>
@@ -71,7 +99,7 @@ const Card: FC<ICard> = ({ front, phonetic, pos, definition, note, examples, aud
           <div>Definition</div>
         </div>
 
-        <div className="font-medium text-white">{definition}</div>
+        <div className={clsx("font-medium text-white", font.className)}>{definition}</div>
       </div>
 
       <Accordion>
@@ -96,7 +124,7 @@ const Card: FC<ICard> = ({ front, phonetic, pos, definition, note, examples, aud
           <div>Note</div>
         </div>
 
-        <div className="pl-7 text-sm">{note.length === 0 ? "This card doesn't have any note..." : note}</div>
+        <div className={clsx("pl-7 text-sm", font.className)}>{note.length === 0 ? "This card doesn't have any note..." : note}</div>
       </div>
     </div>
   )

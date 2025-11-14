@@ -1,14 +1,13 @@
 import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/react"
 import { Plus } from "lucide-react"
 import { useState, FC } from "react"
-import { v4 as uuidv4 } from 'uuid'
+import axios from "axios"
 
 import Languages from "./Languages"
 import Selection from "./Selection"
 import { findBestTFIDFMatch } from "@/utils"
 import { useCardStore } from "@/stores"
-import { useDeckCards } from "@/hooks/useDeckCards"
-import axios from "axios"
+import { cardController } from "@/controllers"
 
 interface AddCardModalProps {
   id: string
@@ -18,7 +17,6 @@ const AddCardModal: FC<AddCardModalProps> =
   ({ id }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const { front, setMeanings, setPhonetics, setSelected, meanings, selected, examples, note, setFront, setNote, setExamples } = useCardStore()
-    const { addCard } = useDeckCards(id)
 
     const [fromLang, setFromLang] = useState("en")
     const [toLang, setToLang] = useState("vi")
@@ -65,9 +63,8 @@ const AddCardModal: FC<AddCardModalProps> =
 
         const date = new Date()
 
-        await addCard({
+        await cardController.create(id, {
           front,
-          back: "",
           deckId: id,
           phonetic: selected.phonetic!.text,
           sourceUrl: selected.phonetic!.sourceUrl,

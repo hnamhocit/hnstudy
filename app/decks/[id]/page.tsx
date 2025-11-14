@@ -96,7 +96,7 @@ const DeckDetails = () => {
 
   return (
     <>
-      <Header name={deck?.name} description={deck?.description} id={id} />
+      <Header name={deck!.name} description={deck!.description} id={id} userId={deck!.userId} />
 
       <div className="p-4 space-y-12">
         <div className="grid grid-cols-4 gap-7">
@@ -115,7 +115,7 @@ const DeckDetails = () => {
           <div className="flex items-center gap-3">
             <Input startContent={<Search size={20} />} placeholder="Enter here" value={q} onValueChange={setQ} />
 
-            <Button color="primary" variant="shadow" startContent={<ZapIcon size={20} />} className="shrink-0">Practice now</Button>
+            <Button color="primary" onPress={() => router.push(`/decks/${id}/practice`)} variant="shadow" startContent={<ZapIcon size={20} />} className="shrink-0">Practice now</Button>
           </div>
         </div>
 

@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
   collection,
-  doc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
   onSnapshot,
   query,
   orderBy,
@@ -58,48 +54,9 @@ export const useDeckCards = (deckId: string) => {
     return () => unsubscribe()
   }, [deckId])
 
-  const addCard = async (cardData: Omit<ICard, 'id'>) => {
-    try {
-      const cardsRef = collection(db, 'decks', deckId, 'cards')
-      const docRef = await addDoc(cardsRef, {
-        ...cardData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-
-      return docRef.id
-    } catch (err) {
-      throw new Error(`Failed to add card: ${err}`)
-    }
-  }
-
-  const updateCard = async (cardId: string, updates: Partial<ICard>) => {
-    try {
-      const cardRef = doc(db, 'decks', deckId, 'cards', cardId)
-      await updateDoc(cardRef, {
-        ...updates,
-        updatedAt: new Date(),
-      })
-    } catch (err) {
-      throw new Error(`Failed to update card: ${err}`)
-    }
-  }
-
-  const deleteCard = async (cardId: string) => {
-    try {
-      const cardRef = doc(db, 'decks', deckId, 'cards', cardId)
-      await deleteDoc(cardRef)
-    } catch (err) {
-      throw new Error(`Failed to delete card: ${err}`)
-    }
-  }
-
   return {
     cards,
     loading,
     error,
-    addCard,
-    updateCard,
-    deleteCard,
   }
 }

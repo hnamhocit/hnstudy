@@ -23,6 +23,19 @@ const getColorClassName = (color: Color, class1: string, class2: string, class3:
     }
 }
 
+const getTextByColor = (color: Color) => {
+    switch (color) {
+        case "blue":
+            return "All vocabulary"
+        case "green":
+            return "Learned"
+        case "purple":
+            return "Learning"
+        default:
+            return "Need to review"
+    }
+}
+
 const getColorIcon = (color: Color) => {
     switch (color) {
         case "blue":
@@ -55,7 +68,7 @@ const StatsCard: FC<StatsCardProps> = ({ color }) => {
         <div className="space-y-2">
             <div className={clsx("text-3xl font-bold", getColorClassName(color, "text-blue-500", "text-green-500", "text-purple-500", "text-orange-500"))}>0</div>
 
-            <div className="text-sm font-medium">All vocabulary</div>
+            <div className="text-sm font-medium">{getTextByColor(color)}</div>
 
             <div className="flex items-center gap-3 text-xs">
                 <TrendingUp size={18} />
