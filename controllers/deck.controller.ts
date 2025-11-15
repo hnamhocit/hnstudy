@@ -1,14 +1,15 @@
+import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { v4 as uuidv4 } from 'uuid'
+
 import { db } from '@/config'
 import { IDeck } from '@/interfaces'
 import { useUserStore } from '@/stores'
-import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore'
-import { v4 as uuidv4 } from 'uuid'
 
 export const deckController = {
   create: async (name: string, description: string, isPublic: boolean) => {
     const id = uuidv4()
 
-    const date = new Date()
+    const date = Date.now()
     const newDeskData: IDeck = {
       id,
       createdAt: date,
@@ -28,6 +29,6 @@ export const deckController = {
   },
 
   update: async (id: string, data: Partial<IDeck>) => {
-    await updateDoc(doc(db, "decks", id), data)
+    await updateDoc(doc(db, "decks", id), { ...data, updatedAt: Date.now() })
   }
 }

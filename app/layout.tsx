@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Be_Vietnam_Pro, Nunito } from "next/font/google";
 
 import "./globals.css";
 import Providers from "@/components/Providers";
 import StyledComponentsRegistry from "./registry";
 
-const font = Nunito({
+const font = Be_Vietnam_Pro({
     subsets: ["latin", "vietnamese"],
     weight: ["300", "400", "500", "600", "700", "800"],
 })

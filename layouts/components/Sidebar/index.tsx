@@ -91,10 +91,10 @@ const Sidebar = () => {
                             href={page.href}
                             className={clsx(
                                 "flex items-center justify-center rounded-xl p-3 transition-all duration-300 group relative",
-                                "hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
+                                "hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
                                 "hover:scale-110",
                                 pathname === page.href
-                                    ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
+                                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
                                     : "text-gray-600 dark:text-gray-400 hover:text-white"
                             )}
                         >
@@ -111,7 +111,7 @@ const Sidebar = () => {
 
             {/* Settings & Home */}
             <Tooltip
-                content="Cài đăt"
+                content="Cài đặt"
                 placement="right"
                 showArrow
                 classNames={{
@@ -122,10 +122,10 @@ const Sidebar = () => {
                     href="/settings"
                     className={clsx(
                         "flex items-center justify-center rounded-xl p-3 transition-all duration-300 group relative",
-                        "hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
+                        "hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
                         "hover:scale-110",
                         pathname === "/settings"
-                            ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
+                            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
                             : "text-gray-600 dark:text-gray-400 hover:text-white"
                     )}
                 >
@@ -137,7 +137,6 @@ const Sidebar = () => {
                     )}
                 </Link>
             </Tooltip>
-
         </div>
     )
 }

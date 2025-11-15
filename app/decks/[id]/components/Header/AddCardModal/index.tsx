@@ -8,6 +8,7 @@ import Selection from "./Selection"
 import { findBestTFIDFMatch } from "@/utils"
 import { useCardStore } from "@/stores"
 import { cardController } from "@/controllers"
+import { serverTimestamp } from "firebase/firestore"
 
 interface AddCardModalProps {
   id: string
@@ -61,7 +62,7 @@ const AddCardModal: FC<AddCardModalProps> =
         })
         const translated = data[0].translations[0].text
 
-        const date = new Date()
+        const date = Date.now()
 
         await cardController.create(id, {
           front,
@@ -74,7 +75,7 @@ const AddCardModal: FC<AddCardModalProps> =
           examples,
           status: "new",
           note,
-          nextReviewDate: date,
+          nextReviewDate: new Date(),
           interval: 0,
           easeFactor: 2.5,
           repetitions: 0,

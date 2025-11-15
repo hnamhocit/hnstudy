@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from 'react'
-import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Image, Tab, Tabs, addToast } from "@heroui/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Image, Tab, Tabs } from "@heroui/react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, User } from "firebase/auth"
 import { auth, db } from "@/config"
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore"
 
 const loginSchema = z.object({
   email: z.email("Email không hợp lệ"),
@@ -61,14 +61,15 @@ const AuthModal = ({ isOpen, onOpenChange }: AuthModalProps) => {
 
     if (!docSnap.exists()) {
       const userUsername = username || user.displayName || user.email!.split('@')[0]
+      const date = Date.now()
 
       await setDoc(userDocRef, {
         id: user.uid,
         email: user.email,
         username: userUsername,
         photoURL: user.photoURL || null,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        createdAt: date,
+        updatedAt: date,
       })
     }
   }
