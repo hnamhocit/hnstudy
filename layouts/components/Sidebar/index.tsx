@@ -13,15 +13,15 @@ import {
     NotebookPenIcon,
     SettingsIcon,
     Home,
-    Flashlight
+    Settings,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const pages = [
     {
-        href: "/dashboard",
-        icon: <LayoutGrid size={20} />,
-        label: "Dashboard"
+        href: "/",
+        icon: <Home size={20} />,
+        label: "Trang chủ"
     },
     {
         href: "/pomodoro",
@@ -61,7 +61,7 @@ const Sidebar = () => {
     return (
         <div className="shrink-0 w-20 flex flex-col border-r border-gray-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md justify-between items-center py-6">
             {/* Logo */}
-            <Link href="/dashboard" className="mb-8">
+            <Link href="/" className="mb-8">
                 <Avatar
                     src="/logo.jpg"
                     alt="hnstudy"
@@ -86,10 +86,10 @@ const Sidebar = () => {
                             href={page.href}
                             className={clsx(
                                 "flex items-center justify-center rounded-xl p-3 transition-all duration-300 group relative",
-                                "hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
+                                "hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
                                 "hover:scale-110",
                                 pathname === page.href
-                                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
+                                    ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
                                     : "text-gray-600 dark:text-gray-400 hover:text-white"
                             )}
                         >
@@ -105,37 +105,34 @@ const Sidebar = () => {
             </div>
 
             {/* Settings & Home */}
-            <div className="flex flex-col gap-3">
-                <Tooltip
-                    content="Trang chủ"
-                    placement="right"
-                    showArrow
+            <Tooltip
+                content="Cài đăt"
+                placement="right"
+                showArrow
+                classNames={{
+                    content: "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900"
+                }}
+            >
+                <Link
+                    href="/settings"
+                    className={clsx(
+                        "flex items-center justify-center rounded-xl p-3 transition-all duration-300 group relative",
+                        "hover:bg-linear-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:shadow-lg",
+                        "hover:scale-110",
+                        pathname === "/settings"
+                            ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-110"
+                            : "text-gray-600 dark:text-gray-400 hover:text-white"
+                    )}
                 >
-                    <Link href="/">
-                        <Button
-                            isIconOnly
-                            variant="light"
-                            className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 transition-all"
-                        >
-                            <Home size={20} />
-                        </Button>
-                    </Link>
-                </Tooltip>
+                    <Settings size={20} />
 
-                <Tooltip
-                    content="Cài đặt"
-                    placement="right"
-                    showArrow
-                >
-                    <Button
-                        isIconOnly
-                        variant="light"
-                        className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:scale-110 transition-all"
-                    >
-                        <SettingsIcon size={20} />
-                    </Button>
-                </Tooltip>
-            </div>
+                    {/* Active indicator */}
+                    {pathname === "/settings" && (
+                        <div className="absolute -right-1 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-blue-500 rounded-l-full"></div>
+                    )}
+                </Link>
+            </Tooltip>
+
         </div>
     )
 }

@@ -1,20 +1,13 @@
-"use client"
-
 import { ReactNode, useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
-import { useRouter, usePathname } from "next/navigation"
 
 import { Loading } from "@/components/Loading"
 import { useUserStore } from "@/stores"
 import { auth } from "@/config"
-
-const publicRoutes = ["/"]
-const guestOnlyRoutes: string[] = []
+import LandingPage from "@/components/LandingPage"
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { user, isLoading, fetchUser } = useUserStore()
-  const router = useRouter()
-  const pathname = usePathname()
 
   useEffect(() => {
     const unsubscriber = onAuthStateChanged(auth, async (user) => {
@@ -26,21 +19,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     })
 
     return () => unsubscriber()
-  }, [fetchUser])
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (user && guestOnlyRoutes.includes(pathname)) {
-        router.replace("/dashboard")
-        return
-      }
-
-      if (!user && !publicRoutes.includes(pathname)) {
-        router.replace("/")
-        return
-      }
-    }
-  }, [user, isLoading, pathname, router])
+  }, [])
 
   if (isLoading) {
     return (
@@ -51,6 +30,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         </div>
       </div>
     )
+  }
+
+  if (!isLoading && !user) {
+    return <LandingPage />
   }
 
   return children

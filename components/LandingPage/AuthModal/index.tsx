@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Image, Tab, Tabs } from "@heroui/react"
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Image, Tab, Tabs, addToast } from "@heroui/react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -100,6 +100,7 @@ const AuthModal = ({ isOpen, onOpenChange }: AuthModalProps) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
       await createUserDocument(userCredential.user, data.username)
+      window.location.reload()
       onOpenChange(false)
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
