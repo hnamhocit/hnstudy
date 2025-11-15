@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import DefaultLayout from '@/layouts/DefaultLayout'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 export default function Dashboard() {
     // Hard-coded stats data

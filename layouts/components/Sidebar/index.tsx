@@ -1,6 +1,6 @@
 "use client"
 
-import { Avatar, Button, Tooltip } from "@heroui/react"
+import { Avatar, Tooltip } from "@heroui/react"
 import clsx from "clsx"
 import Link from "next/link"
 import {
@@ -9,11 +9,11 @@ import {
     ClockIcon,
     DatabaseIcon,
     LanguagesIcon,
-    LayoutGrid,
     NotebookPenIcon,
-    SettingsIcon,
     Home,
     Settings,
+    TrendingUp,
+    CreditCard,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -49,9 +49,14 @@ const pages = [
         label: "Lưu trữ"
     },
     {
-        href: "/analytics",
-        icon: <ChartPieIcon size={20} />,
-        label: "Phân tích"
+        href: "/leaderboard",
+        icon: <TrendingUp size={20} />,
+        label: "Xếp hạng"
+    },
+    {
+        href: "/pricing",
+        icon: <CreditCard size={20} />,
+        label: "Nâng cấp"
     }
 ]
 
