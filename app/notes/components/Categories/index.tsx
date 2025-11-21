@@ -1,50 +1,53 @@
-import { getCategoryColor } from "@/utils"
-import { Card, CardBody } from "@heroui/react"
-import { FC } from "react"
-
-const categories = [
-  { name: "Tất cả", count: 12, color: "bg-gray-500" },
-  { name: "Lập trình", count: 5, color: "bg-blue-500" },
-  { name: "Tiếng Anh", count: 4, color: "bg-green-500" },
-  { name: "Toán học", count: 2, color: "bg-purple-500" },
-  { name: "Khoa học", count: 1, color: "bg-orange-500" }
-]
+import { getCategoryColor } from "@/utils";
+import { Card, CardBody } from "@heroui/react";
+import { FC } from "react";
+import { motion } from "motion/react";
 
 interface CategoriesProps {
-  categories: { name: string, count: number }[]
+  categories: { name: string; count: number }[];
 }
 
 const Categories: FC<CategoriesProps> = ({ categories }) => {
   return (
-    <Card>
-      <CardBody className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <Card className="border-none shadow-md">
+      <CardBody className="p-5">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
           Danh mục
         </h3>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {categories.map((category, index) => (
-            <div
+            <motion.div
               key={index}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+              whileHover={{ x: 5, backgroundColor: "rgba(0,0,0,0.05)" }}
+              className="flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className='w-3 h-3 rounded-full' style={{
-                  backgroundColor: getCategoryColor(category.name)
-                }}></div>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{
+                    backgroundColor: getCategoryColor(category.name),
+                    boxShadow: `0 0 8px ${getCategoryColor(category.name)}`,
+                  }}
+                />
 
-                <span className="text-gray-700 dark:text-gray-300">{category.name}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {category.name}
+                </span>
               </div>
 
-              <div className="flex items-center justify-center text-sm text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 w-8 h-8 rounded-full">
+              <div className="flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 w-6 h-6 rounded-full">
                 {category.count}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default Categories 
+export default Categories;

@@ -4,26 +4,24 @@ import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { create } from "zustand";
 
-
 interface UserStore {
-  user: IUser | null
-  isLoading: boolean,
-  fetchUser: (uid: string) => Promise<void>
-  logout: () => Promise<void>
+  user: IUser | null;
+  isLoading: boolean;
+  fetchUser: (uid: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
   user: null,
-  isLoading: false,
+  isLoading: true,
   fetchUser: async (uid) => {
-    set({ isLoading: true })
-    const snapshot = await getDoc(doc(db, "users", uid))
-    const data = snapshot.data() as IUser
-    set({ user: data, isLoading: false })
+    const snapshot = await getDoc(doc(db, "users", uid));
+    const data = snapshot.data() as IUser;
+    set({ user: data, isLoading: false });
   },
   logout: async () => {
-    set({ isLoading: true })
-    await signOut(auth)
-    set({ isLoading: false, user: null })
-  }
-}))
+    set({ isLoading: true });
+    await signOut(auth);
+    set({ isLoading: false, user: null });
+  },
+}));
