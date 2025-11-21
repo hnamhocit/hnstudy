@@ -56,7 +56,7 @@ const features = [
     color: "from-blue-500 to-cyan-500",
     bg: "bg-blue-50 dark:bg-blue-900/20",
     text: "text-blue-600 dark:text-blue-400",
-    href: "/flashcards",
+    href: "/translator",
   },
   {
     icon: <Timer className="w-7 h-7" />,
@@ -190,10 +190,12 @@ export default function Dashboard() {
                     <div className="p-3 rounded-2xl bg-white/20 backdrop-blur-md border border-white/10">
                       {stat.icon}
                     </div>
+
                     <div className="text-right">
                       <div className="text-3xl font-bold tracking-tight">
                         {stat.value}
                       </div>
+
                       <div className="text-sm font-medium opacity-90">
                         {stat.label}
                       </div>

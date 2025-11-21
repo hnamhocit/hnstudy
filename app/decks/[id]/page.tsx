@@ -1,130 +1,191 @@
-"use client"
+"use client";
 
-import { doc, onSnapshot } from "firebase/firestore"
-import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { Button, ButtonGroup, Input } from "@heroui/react"
-import { BookOpen, Brain, ChevronLeft, Grid, List, Search, WalletCards, Webhook, ZapIcon } from "lucide-react"
+import { doc, onSnapshot } from "firebase/firestore";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useMemo } from "react";
+import { Button, Input, Spinner } from "@heroui/react";
+import {
+  BookOpen,
+  Brain,
+  Search,
+  WalletCards,
+  Webhook,
+  ZapIcon,
+  AlertCircle,
+  BrainIcon,
+  BookOpenIcon,
+  WalletCardsIcon,
+  WebhookIcon,
+} from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 
-import { db } from "@/config"
-import { ICard, IDeck } from "@/interfaces"
-import Header from "./components/Header"
-import Stat from "./components/Stat"
-import Card from "./components/Card"
-import { useDeckCards } from "@/hooks/useDeckCards"
+import { db } from "@/config";
+import { IDeck } from "@/interfaces";
+import Header from "./components/Header";
+import Stat from "./components/Stat";
+import Card from "./components/Card";
+import { useDeckCards } from "@/hooks/useDeckCards";
 
 const DeckDetails = () => {
-  const { id } = useParams<{ id: string }>()
-  const { cards } = useDeckCards(id)
-  const [deck, setDeck] = useState<IDeck | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [filteredCards, setFilteredCards] = useState<ICard[]>([])
-  const [q, setQ] = useState("")
+  const { id } = useParams<{ id: string }>();
+  const { cards } = useDeckCards(id);
+  const [deck, setDeck] = useState<IDeck | null>(null);
+  const [isLoadingDeck, setIsLoadingDeck] = useState(true);
+  const [q, setQ] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const [error, setError] = useState<string | null>(null)
-
-  const router = useRouter()
-
+  // 1. Fetch Deck Info
   useEffect(() => {
-    if (!id) {
-      setIsLoading(false)
-      setError("Invalid Desk ID.")
-      return
-    }
-
-    const subscriber = onSnapshot(
+    if (!id) return;
+    const unsub = onSnapshot(
       doc(db, "decks", id),
-
       (snapshot) => {
         if (!snapshot.exists()) {
-          setIsLoading(false)
-          setError("This flashcard is not exists or has been deleted")
-          return
+          setError("Deck not found.");
+          setIsLoadingDeck(false);
+          return;
         }
-
-        setError(null)
-        const data = snapshot.data()
-        setDeck(data as IDeck)
-        setIsLoading(false)
+        setDeck(snapshot.data() as IDeck);
+        setIsLoadingDeck(false);
       },
-
       (err) => {
-        console.error("Firebase Snapshot Error:", err)
-        setIsLoading(false)
+        console.error(err);
+        setError("Access denied or error.");
+        setIsLoadingDeck(false);
+      },
+    );
+    return () => unsub();
+  }, [id]);
 
-        if (err.code === "permission-denied") {
-          setError("You are not authorized to access this flashcard")
-        } else {
-          setError("Unknown error")
-        }
-      }
-    )
+  // 2. Derived State: Filter & Stats (No useEffect needed)
+  const filteredCards = useMemo(() => {
+    if (!q) return cards;
+    return cards.filter((c) => c.front.toLowerCase().includes(q.toLowerCase()));
+  }, [cards, q]);
 
-    return () => subscriber()
-  }, [id, router])
+  const stats = useMemo(
+    () => ({
+      total: cards.length,
+      learned: cards.filter((c) => c.status === "learned").length,
+      learning: cards.filter((c) => c.status === "learning").length,
+      review: cards.filter((c) => c.status === "review").length,
+    }),
+    [cards],
+  );
 
-  useEffect(() => {
-    if (q.length > 3) {
-      setFilteredCards(cards.filter(c => c.front.toLocaleLowerCase().includes(q.toLocaleLowerCase())))
-    }
-  }, [q])
-
-  useEffect(() => {
-    if (cards.length > 0) {
-      setFilteredCards(cards)
-    }
-  }, [cards])
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
+  if (isLoadingDeck)
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-neutral-950">
+        <Spinner size="lg" color="primary" />
+      </div>
+    );
 
   if (error) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="text-center space-y-3 max-w-sm w-full p-4">
-          <h1 className="text-xl font-bold tex-red-500">{error}</h1>
-
-          <Button
-            radius="full"
-            startContent={<ChevronLeft size={20} />}
-            color="danger" onPress={() => router.back()}>Go back</Button>
+      <div className="h-screen flex flex-col items-center justify-center gap-4 bg-neutral-950">
+        <div className="p-4 bg-red-500/10 rounded-full">
+          <AlertCircle size={40} className="text-red-500" />
         </div>
+        <h1 className="text-xl font-bold text-white">{error}</h1>
+        <Button variant="flat" onPress={() => router.back()}>
+          Go back
+        </Button>
       </div>
-    )
+    );
   }
 
+  const statBlocks = [
+    {
+      label: "Total Cards",
+      value: stats.total,
+      icon: <WalletCardsIcon size={24} />,
+      className: "bg-neutral-900/50 text-neutral-200 !border-neutral-950/50",
+    },
+    {
+      label: "Mastered",
+      value: stats.learned,
+      icon: <BookOpenIcon size={24} />,
+      className: "bg-emerald-500/5 text-emerald-400 border-emerald-500/20",
+    },
+    {
+      label: "Learning",
+      value: stats.learning,
+      icon: <BrainIcon size={24} />,
+      className: "bg-blue-500/5 text-blue-400 border-blue-500/20",
+    },
+    {
+      label: "Review",
+      value: stats.review,
+      icon: <WebhookIcon size={24} />,
+      className: "bg-orange-500/5 text-orange-400 border-orange-500/20",
+    },
+  ];
+
   return (
-    <>
-      <Header name={deck!.name} description={deck!.description} id={id} userId={deck!.userId} />
+    <div className="min-h-screen bg-neutral-950 text-neutral-200 pb-20 selection:bg-primary-500/30">
+      <Header
+        name={deck!.name}
+        description={deck!.description}
+        id={id}
+        userId={deck!.userId}
+      />
 
-      <div className="p-4 space-y-12">
-        <div className="grid grid-cols-4 gap-7">
-          <Stat label="Total" value={cards.length} icon={<WalletCards size={32} />} className="text-gray-300 bg-gray-700/20" />
-          <Stat label="Learned" value={cards.filter(c => c.status === 'learned').length} icon={<BookOpen size={32} />} className="text-green-500 bg-green-900/20" />
-          <Stat label="Learning" value={cards.filter(c => c.status == 'learning').length} icon={<Brain size={32} />} className="text-blue-500 bg-blue-900/20" />
-          <Stat label="Need to review" value={cards.filter(c => c.status === 'review').length} icon={<Webhook size={32} />} className="text-orange-500 bg-orange-900/20" />
+      <main className="p-6 space-y-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {statBlocks.map((stat, i) => (
+            <Stat key={stat.label} {...stat} delay={i * 0.1} />
+          ))}
         </div>
 
-        <div className="flex items-center justify-between">
-          <ButtonGroup size="lg" variant="bordered">
-            <Button isIconOnly><Grid size={20} /></Button>
-            <Button isIconOnly><List size={20} /></Button>
-          </ButtonGroup>
-
-          <div className="flex items-center gap-3">
-            <Input startContent={<Search size={20} />} placeholder="Enter here" value={q} onValueChange={setQ} />
-
-            <Button color="primary" onPress={() => router.push(`/decks/${id}/practice`)} variant="shadow" startContent={<ZapIcon size={20} />} className="shrink-0">Practice now</Button>
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-28 z-40 py-4 bg-neutral-950/80 backdrop-blur-lg rounded-2xl px-2 -mx-2">
+          <div className="w-full sm:w-96">
+            <Input
+              startContent={<Search size={18} className="text-neutral-500" />}
+              placeholder="Search cards..."
+              value={q}
+              onValueChange={setQ}
+              classNames={{
+                inputWrapper:
+                  "bg-neutral-900 border border-neutral-800 group-data-[focus=true]:bg-neutral-800",
+              }}
+              isClearable
+            />
           </div>
+
+          <Button
+            color="primary"
+            onPress={() => router.push(`/decks/${id}/practice`)}
+            className="w-full sm:w-auto font-semibold shadow-lg shadow-primary/20"
+            startContent={<ZapIcon size={18} fill="currentColor" />}
+          >
+            Practice Mode
+          </Button>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
-          {filteredCards.map(card => <Card key={card.id} {...card} />)}
-        </div>
-      </div>
-    </>
-  )
-}
+        {/* Cards Grid */}
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredCards.length > 0 ? (
+              filteredCards.map((card) => <Card key={card.id} {...card} />)
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full py-20 text-center text-neutral-500"
+              >
+                <p>No cards found matching &quot;{q}&quot;</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </main>
+    </div>
+  );
+};
 
-export default DeckDetails
+export default DeckDetails;
